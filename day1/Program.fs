@@ -20,7 +20,7 @@ printf $"{singularValue}\n\n"
 let topThree =
   Array.sort values
   |> Array.rev
-  |> Array.take 3
+  |> Array.truncate 3
   |> Array.sum
 
 printf $"{topThree}\n"
