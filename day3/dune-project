@@ -1,0 +1,9 @@
+(lang dune 3.6)
+
+(name day3)
+
+(generate_opam_files true)
+
+(authors "leviongit")
+
+; See the complete stanza docs at https://dune.readthedocs.io/en/stable/dune-files.html#dune-project
