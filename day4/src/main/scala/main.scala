@@ -29,7 +29,29 @@ def p1(): Unit = {
   src.close
 }
 
+def p2(): Unit = {
+  val src = Source.fromFile("in.txt")
+  val lns = src.getLines
+
+  val plst: Iterator[(Range.Inclusive, Range.Inclusive)] =
+    lns.map(
+      _.split(',') match {
+        case Array(left: String, right: String) => (strToRange(left), strToRange(right))
+        case _ => throw RuntimeException()
+      }
+    )
+
+  val overlaps = plst.map(_.intersect(_).nonEmpty).toArray
+  val amt = overlaps.foldLeft(0: Int)(_ + _)
+  println(amt)
+
+  src.close
+}
+
+
 @main
 def main(): Unit = {
   p1()
+  println()
+  p2()
 }
