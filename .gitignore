@@ -5,3 +5,5 @@ in*.txt
 _build
 .ocamlformat
 *.opam
+target
+.bsp
