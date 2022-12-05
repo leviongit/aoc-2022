@@ -20,7 +20,7 @@ fun readData(input: String): List<MutableList<Char>> {
   }).map { row -> row.filter { !it.isWhitespace() }.toMutableList() }
 }
 
-class Instr(val count: Int, val from: Int, val to: Int) {
+class Instr(private val count: Int, private val from: Int, private val to: Int) {
   companion object {
     fun decode(string: String): Instr {
       val (count, from, to) = string.split(" ").filterIndexed { idx, _ -> idx % 2 == 1 }.map { it.toInt() }
@@ -28,34 +28,44 @@ class Instr(val count: Int, val from: Int, val to: Int) {
     }
   }
 
-  fun execute(state: List<MutableList<Char>>): List<MutableList<Char>> {
-//    val dat = slst.take(count)
-//    state[from] = slst.drop(count).toMutableList()
-//    state[to] = (dat + dlst).toMutableList();
-    return List(state.size) {
-      when (it) {
-        to -> state[from].take(count).reversed() + state[to]
+  fun execute(state: List<MutableList<Char>>, cm9001: Boolean): List<MutableList<Char>> {
+    return List(state.size) { idx ->
+      when (idx) {
+        to -> state[from].take(count).let {
+          if (cm9001) {
+            it
+          } else {
+            it.reversed()
+          }
+        } + state[to]
+
         from -> state[from].drop(count)
-        else -> state[it]
+        else -> state[idx]
       }.toMutableList()
     }
   }
 }
 
-fun applyInstrs(state: List<MutableList<Char>>, instrs: List<Instr>): List<MutableList<Char>> {
-  return instrs.fold(state) { a, i -> i.execute(a) }
+fun applyInstrs(state: List<MutableList<Char>>, instrs: List<Instr>, cm9001: Boolean): List<MutableList<Char>> {
+  return instrs.fold(state) { a, i -> i.execute(a, cm9001) }
 }
 
 fun p1(state: List<MutableList<Char>>, instrs: List<Instr>) {
-  println(applyInstrs(state, instrs).map { it.first() }.joinToString(""))
+  println(applyInstrs(state, instrs, false).map { it.first() }.joinToString(""))
+}
+
+fun p2(state: List<MutableList<Char>>, instrs: List<Instr>) {
+  println(applyInstrs(state, instrs, true).map { it.first() }.joinToString(""))
 }
 
 fun main() {
   val fileContents = File("in.txt").readText()
 
-  val (state, instrs) = fileContents.split("\n\n")
-    .let { (data, instrs) -> Pair(readData(data), instrs.lines().map { Instr.decode(it) }) }
+  val (state, instrs) = fileContents.split("\n\n").let { (data, instrs) ->
+    Pair(readData(data), instrs.lines().map { Instr.decode(it) })
+  }
 
   p1(state, instrs)
+  p2(state, instrs)
 }
 
