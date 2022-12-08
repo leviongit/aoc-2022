@@ -63,6 +63,16 @@ internal static class Solution {
     Console.Out.WriteLine(list.FindAll(file => file.Size < 100_000).Sum(file => file.Size));
   }
 
+  private static void P2(Directory root) {
+    const int totalSpace = 70_000_000;
+    const int requiredSpace = 30_000_000;
+    var usedSpace = totalSpace - root.Size;
+
+    var dirList = ListOfEnumerator(root.DirWalkEnumerator());
+    dirList.Sort((dirleft, dirright) => dirleft.Size.CompareTo(dirright.Size));
+    Console.Out.WriteLine(dirList.Find(dir => usedSpace + dir.Size > requiredSpace)?.Size);
+  }
+
   public static void Main() {
     var currentDirectory = new Directory("/", null) ?? throw new Exception();
     var root = currentDirectory;
@@ -93,5 +103,6 @@ internal static class Solution {
       }
 
     P1(root);
+    P2(root);
   }
 }
