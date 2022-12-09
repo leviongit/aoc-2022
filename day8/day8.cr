@@ -33,7 +33,7 @@ slots = chars.map_with_index { |ln, y|
 
 transposed = slots.transpose
 
-def p1
+def p1(slots, transposed)
   ys = 1
   yl = slots.size - 1
   xl = slots.first.size - 1
@@ -60,3 +60,38 @@ def p1
 
   pp slots.flatten.select(&.visible?).size
 end
+
+def p2(slots, transposed)
+  ys = 1
+  yl = slots.size - 1
+  xl = slots.first.size - 1
+
+  max_score = -1
+
+  while ys < yl
+    xs = 1
+    while xs < xl
+      sself = slots[ys][xs]
+      left = slots[ys][0...xs].reverse
+      right = slots[ys][(xs + 1)..-1]
+      up = transposed[xs][0...ys].reverse
+      down = transposed[xs][(ys + 1)..-1]
+
+      lefts = (left.index { |o| o.value >= sself.value } || (left.size - 1)) + 1
+      rights = (right.index { |o| o.value >= sself.value } || (right.size - 1)) + 1
+      ups = (up.index { |o| o.value >= sself.value } || (up.size - 1)) + 1
+      downs = (down.index { |o| o.value >= sself.value } || (down.size - 1)) + 1
+
+      max_score = Math.max(max_score, (lefts.as(Int32) * rights.as(Int32) * ups.as(Int32) * downs.as(Int32)))
+
+      xs += 1
+    end
+
+    ys += 1
+  end
+
+  pp max_score
+end
+
+p1(slots, transposed)
+p2(slots, transposed)
